@@ -33,6 +33,7 @@ class Encoder(object):
     @lazy_property
     def encoder_out(self):
         x = self._input
+        x = tf.identity(x, 'encoder_input')
 
         for filters, stride in zip(self._num_filters, self._strides):
             padding = 'same'
@@ -48,7 +49,7 @@ class Encoder(object):
             if self._batch_normalization:
                 x = tf.layers.batch_normalization(x, training=self._is_training)
 
-        encoder_out = tf.contrib.layers.flatten(x)
+        encoder_out = tf.reshape(x, [-1, 32768])
         
         return encoder_out
 
@@ -60,6 +61,7 @@ class Encoder(object):
             x,
             self._latent_space_size,   
             activation=None,
+            name='encoder_output',
             kernel_initializer=tf.contrib.layers.xavier_initializer()
         )
 
