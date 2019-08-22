@@ -81,12 +81,15 @@ class Decoder(object):
                 kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
                 activation=tf.nn.sigmoid
             )
+        x = tf.identity(x, 'decoder_output')
         return x
 
     @lazy_property
     def reconstr_loss(self):
-        print(self.x.shape)
-        print(self._reconstruction_target.shape)
+        tf.summary.image('decoder_output', self.x, max_outputs=1)
+        tf.summary.scalar('encoder output mean', tf.reduce_mean(self._latent_code))
+        print("Decoder output tensor shape = {}".format(self.x.shape))
+        print("Decoder target image shape = {}".format(self._reconstruction_target.shape))
         if self._loss == 'L2':
             if self._bootstrap_ratio > 1:
 
